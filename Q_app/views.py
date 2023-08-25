@@ -495,7 +495,7 @@ def edit(request, id):
 
 #  campaign req data
 def update(request, id):
-    print(request.POST.get('planned_session'))
+    print('res:',request.POST)
     op=request.POST.getlist('option')
     sel_col=request.POST.getlist('selected_col')
     cl_access = request.POST.getlist('client_access')

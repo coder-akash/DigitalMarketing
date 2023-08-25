@@ -226,19 +226,19 @@ return true;
                 <div class="budget">
                     <div class="field-container">
                         <label for='bud_impr'>Planned Budget(Impressions) : </label> 
-                        <input type="number" min="0"  class="form-control" name="pl_budget_impression" id='bud_impr'  value="{{td.planned_budget_impressions}}" disabled>
+                        <input type="number" min="0" step=0.01  class="form-control" name="pl_budget_impression" id='bud_impr'  value="{{td.planned_budget_impressions}}" readonly>
                     </div>
                     <div class="field-container">
                         <label for='bud_clicks'>Planned Budget(Clicks): </label> 
-                        <input type="number" min="0" step=0.01 class="form-control" name="pl_budget_clicks" id='bud_clicks'  value="{{td.planned_budget_clicks}}" disabled>
+                        <input type="number" min="0" step=0.01 class="form-control" name="pl_budget_clicks" id='bud_clicks'  value="{{td.planned_budget_clicks}}" readonly>
                     </div>
                     <div class="field-container">
                         <label for='bud_sessions'>Planned Budget(Sessions): </label>
-                        <input type="number" min="0" step=0.01 class="form-control" name="pl_budget_sessions" id='bud_sessions'  value="{{td.planned_budget_sessions}}" disabled>
+                        <input type="number" min="0" step=0.01 class="form-control" name="pl_budget_sessions" id='bud_sessions'  value="{{td.planned_budget_sessions}}" readonly>
                     </div>
                     <div class="field-container">
                         <label for='ctr'>CTR in %: </label><input style='height:15px;width:15px;' type="checkbox" name="selected_col" value='ctr' >
-                        <input type="number" class="form-control" name="ctr" id='ctr'  value="{{td.ctr}}" >
+                        <input type="number" min="0" step=0.01 class="form-control" name="ctr" id='ctr'  value="{{td.ctr}}" >
                     </div>
                 </div>
                 <div class='client '>
