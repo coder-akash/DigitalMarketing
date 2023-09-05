@@ -42,7 +42,7 @@ def login(request):
         password=request.POST.get('password')
         #uname=logindetails.objects.filter(username=username)
         #pwd=logindetails.objects.filter(password=password)
-        q="select * from q_app_logindetails where binary username='{}' and binary password = '{}'".format(username,password)
+        q="select * from Q_app_logindetails where binary username='{}' and binary password = '{}'".format(username,password)
         cur.execute(q)
         logDetails = list(cur.fetchall())
         if len(logDetails) != 0:
@@ -59,7 +59,7 @@ def login(request):
         else:
             uname=clientdetails.objects.filter(username=username)
             #pwd = uname.values()[0]['password']
-            q = "select  cast(aes_decrypt(password, 'pass') as char)as password from q_app_clientdetails where binary username = '{}'".format(username)
+            q = "select  cast(aes_decrypt(password, 'pass') as char)as password from Q_app_clientdetails where binary username = '{}'".format(username)
             cur.execute(q)
             pwd = cur.fetchone()
             if pwd  is not None:
@@ -74,24 +74,24 @@ def login(request):
                         #print(i.id)
                         clientname = i.clientname
                         clientid = i.id
-                        cl_id = 'select id from q_app_requirements where deptid_id = {}'.format(clientid)
+                        cl_id = 'select id from Q_app_requirements where deptid_id = {}'.format(clientid)
                         cur.execute(cl_id)
                         clientid = cur.fetchone()[0]
                         #print(clientid)
                         conn.commit()
-                        q = "select distinct campaign_name from  q_app_user_report where clientname = '{}'".format(i.clientname)
+                        q = "select distinct campaign_name from  Q_app_user_report where clientname = '{}'".format(i.clientname)
                         cur.execute(q)
                         campaigns = list(cur.fetchall())
                         ##print(campaigns[0][0],campaigns[0])
                         ##campaigns=user_report.objects.filter(clientid_id = i.id).distinct()
-                        cl_access_q = f"select sel_options, client_access from q_app_requirements where id={clientid} and campaign_name='{campaigns[0][0]}';"
+                        cl_access_q = f"select sel_options, client_access from Q_app_requirements where id={clientid} and campaign_name='{campaigns[0][0]}';"
                         #print(cl_access_q)
                         cur.execute(cl_access_q)
                         data=cur.fetchone()
                         #print(ast.literal_eval(data[0]), ast.literal_eval(data[1]))
                         op= ast.literal_eval(data[0])
                         cl_access_col = ast.literal_eval(data[1])
-                        head = ['q_app_user_report.id', 'clientname', 'q_app_user_report.campaign_name', 'date', 'no_of_impressions', 'no_of_clicks', 'no_of_sessions', 'cpm', 'cpc', 'cost_per_session', 'total_cpm', 'total_cpc', 'total_cps', 'q_app_user_report.ctr', 'clientid_id']
+                        head = ['Q_app_user_report.id', 'clientname', 'Q_app_user_report.campaign_name', 'date', 'no_of_impressions', 'no_of_clicks', 'no_of_sessions', 'cpm', 'cpc', 'cost_per_session', 'total_cpm', 'total_cpc', 'total_cps', 'Q_app_user_report.ctr', 'clientid_id']
                         col=head[:4]
                         print('ass',cl_access_col)
                         for i in head:
@@ -99,7 +99,7 @@ def login(request):
                                 col.append(i)            
                         #print(col)               
                        
-                        camp_data_query=f"select {', '.join(col)} from q_app_user_report where clientid_id={clientid} and campaign_name='{campaigns[0][0]}' order by date desc;"
+                        camp_data_query=f"select {', '.join(col)} from Q_app_user_report where clientid_id={clientid} and campaign_name='{campaigns[0][0]}' order by date desc;"
                         #print(camp_data_query)
                         cur.execute(camp_data_query)
                         camp_data = cur.fetchall()
@@ -133,7 +133,7 @@ def statics(op,cl_name,camp):
     '''
     print(camp)
     cur,conn = sqlconn()
-    q = "select * from  q_app_user_report where campaign_name = '{}' order by date".format(camp)
+    q = "select * from  Q_app_user_report where campaign_name = '{}' order by date".format(camp)
     cur.execute(q)
     conn.commit()
     data =  list(cur.fetchall())
@@ -167,13 +167,13 @@ def statics(op,cl_name,camp):
     no_clicks=None
     no_sessions=None
     if len(op)!=0:
-        cur.execute(f"select date from q_app_user_report where clientname='{cl_name}' and campaign_name='{camp}'")
+        cur.execute(f"select date from Q_app_user_report where clientname='{cl_name}' and campaign_name='{camp}'")
         d= cur.fetchall()
         #print(d)
         dates=list(map(lambda x:x[0],d))
         for i in op:
             if i=='impressions':
-                cur.execute(f"select no_of_impressions from q_app_user_report where clientname='{cl_name}' and campaign_name='{camp}'")
+                cur.execute(f"select no_of_impressions from Q_app_user_report where clientname='{cl_name}' and campaign_name='{camp}'")
                 d= cur.fetchall()
                 #print(d)
                 no_impre=list(map(lambda x:x[0],d))
@@ -181,14 +181,14 @@ def statics(op,cl_name,camp):
                 total['Total Impressions'] = sum(no_impre)
                 #print(no_impre)
             elif i=='clicks':
-                cur.execute(f"select no_of_clicks from q_app_user_report where clientname='{cl_name}' and campaign_name='{camp}'")
+                cur.execute(f"select no_of_clicks from Q_app_user_report where clientname='{cl_name}' and campaign_name='{camp}'")
                 d= cur.fetchall()
                 #print(d)
                 no_clicks=list(map(lambda x:x[0],d))
                 field['no_clicks'] = no_clicks
                 total['Total Clicks'] = sum(no_clicks)
             elif i=='session':
-                cur.execute(f"select no_of_sessions from q_app_user_report where clientname='{cl_name}' and campaign_name='{camp}'")
+                cur.execute(f"select no_of_sessions from Q_app_user_report where clientname='{cl_name}' and campaign_name='{camp}'")
                 d= cur.fetchall()
                 #print(d)
                 no_sessions=list(map(lambda x:x[0],d))
@@ -202,7 +202,7 @@ def statics(op,cl_name,camp):
         return dates,field,total
 
 
-            #field['impression']=cur.query(f"select no_of_impressions from q_app_user_report")
+            #field['impression']=cur.query(f"select no_of_impressions from Q_app_user_report")
 
     
 
@@ -212,12 +212,12 @@ def campaign_details(request):
     #print('client',clientid)
     cur,conn = sqlconn()
     #print(clientid)
-    q = "select distinct campaign_name from  q_app_user_report where clientname = '{}'".format(clientname)
+    q = "select distinct campaign_name from  Q_app_user_report where clientname = '{}'".format(clientname)
     cur.execute(q)
     campaigns = list(cur.fetchall())
     print(campaigns)
     conn.commit()
-    #q = 'select no_of_impressions, no_of_clicks,no_of_sessions campaign_name from  q_app_user_report where clientid_id = {}'.format(clientid)
+    #q = 'select no_of_impressions, no_of_clicks,no_of_sessions campaign_name from  Q_app_user_report where clientid_id = {}'.format(clientid)
     #cur.execute(q)
     #print(statics(clientid))
     #labels = ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange']
@@ -226,7 +226,7 @@ def campaign_details(request):
         clientname=request.POST.get('clientname')
         selected_campaign = request.POST.get('campaign_name')
 
-        q = "select distinct campaign_name from  q_app_user_report where clientname = '{}'".format(clientname)
+        q = "select distinct campaign_name from  Q_app_user_report where clientname = '{}'".format(clientname)
         cur.execute(q)
         campaigns = list(cur.fetchall())
         
@@ -241,14 +241,14 @@ def campaign_details(request):
         return render(request, 'campaign.html', context)
         '''
 
-        cl_access_q = f"select sel_options, client_access from q_app_requirements where name='{clientname}' and campaign_name='{selected_campaign}';"
+        cl_access_q = f"select sel_options, client_access from Q_app_requirements where name='{clientname}' and campaign_name='{selected_campaign}';"
         print(cl_access_q)
         cur.execute(cl_access_q)
         data=cur.fetchone()
         #print(ast.literal_eval(data[0]), ast.literal_eval(data[1]))
         op= ast.literal_eval(data[0])
         cl_access_col = ast.literal_eval(data[1])
-        head = ['q_app_user_report.id', 'clientname', 'q_app_user_report.campaign_name', 'date', 'no_of_impressions', 'no_of_clicks', 'no_of_sessions', 'cpm', 'cpc', 'cost_per_session', 'total_cpm', 'total_cpc', 'total_cps', 'ctr', 'clientid_id']
+        head = ['Q_app_user_report.id', 'clientname', 'Q_app_user_report.campaign_name', 'date', 'no_of_impressions', 'no_of_clicks', 'no_of_sessions', 'cpm', 'cpc', 'cost_per_session', 'total_cpm', 'total_cpc', 'total_cps', 'ctr', 'clientid_id']
         col=head[:4]
         #print(cl_access_col)
         for i in head:
@@ -257,7 +257,7 @@ def campaign_details(request):
                 
         print(col)               
        
-        camp_data_query=f"select {', '.join(col)} from q_app_user_report where clientname='{clientname}' and campaign_name='{selected_campaign}' order by date desc;"
+        camp_data_query=f"select {', '.join(col)} from Q_app_user_report where clientname='{clientname}' and campaign_name='{selected_campaign}' order by date desc;"
         #print(camp_data_query)
         cur.execute(camp_data_query)
         camp_data = cur.fetchall()
@@ -349,7 +349,7 @@ def taskcreation(request):
     if request.method=='GET':
         #print(request)
         #people = clientdetails.objects.all()
-        q = 'select id ,clientname from  q_app_clientdetails'
+        q = 'select id ,clientname from  Q_app_clientdetails'
         cur.execute(q)
         people = list(cur.fetchall())
         #print(people,type(people))
@@ -404,7 +404,7 @@ def taskcreation(request):
             ).save()
             messages.success(request,"Form Submitted Successfully")
             #people = clientdetails.objects.all()
-            q = 'select id ,clientname from  q_app_clientdetails'
+            q = 'select id ,clientname from  Q_app_clientdetails'
             cur.execute(q)
             people = list(cur.fetchall())
             conn.commit()
@@ -419,7 +419,7 @@ def taskcreation_user(request):
     if request.method=='GET':
         print(request)
         #people = clientdetails.objects.all()
-        q = 'select id ,clientname from  q_app_clientdetails'
+        q = 'select id ,clientname from  Q_app_clientdetails'
         cur.execute(q)
         people = list(cur.fetchall())
         #print(people,type(people))
@@ -474,7 +474,7 @@ def taskcreation_user(request):
             ).save()
             messages.success(request,"Form Submitted Successfully")
             #people = clientdetails.objects.all()
-            q = 'select id ,clientname from  q_app_clientdetails'
+            q = 'select id ,clientname from  Q_app_clientdetails'
             cur.execute(q)
             people = list(cur.fetchall())
             conn.commit()
@@ -616,7 +616,7 @@ def planning(p,d):
             achived['total_cps']=0
     
     #total_bud = user_report.objects.filter(Q(clientid_id=p) & Q(campaign_name=d)).values(x for x in budget_col)
-    q=f"select {', '.join(budget_col)}  from q_app_user_report inner join q_app_requirements on q_app_requirements.id = clientid_id where deptid_id={p} and q_app_user_report. campaign_name='{d}'"
+    q=f"select {', '.join(budget_col)}  from Q_app_user_report inner join Q_app_requirements on Q_app_requirements.id = clientid_id where deptid_id={p} and Q_app_user_report. campaign_name='{d}'"
     cur.execute(q)
     budget = cur.fetchall()
     for i in budget:
@@ -658,15 +658,15 @@ def fetch_data(request):
     cur,conn = sqlconn()
     q=''
     if parentValue == 'all' and dependValue is None:
-        q = 'select q_app_user_report.id,q_app_user_report.clientname,  q_app_user_report.campaign_name,date, no_of_impressions,no_of_clicks,no_of_sessions,cpm,cpc,cost_per_session,total_cpm,total_cpc,total_cps,total_cost,ctr,start_date,end_date from q_app_user_report inner join q_app_requirements on clientid_id = q_app_requirements.id where q_app_user_report.campaign_name = q_app_requirements.campaign_name order by date desc;'
+        q = 'select Q_app_user_report.id,Q_app_user_report.clientname,  Q_app_user_report.campaign_name,date, no_of_impressions,no_of_clicks,no_of_sessions,cpm,cpc,cost_per_session,total_cpm,total_cpc,total_cps,total_cost,ctr,start_date,end_date from Q_app_user_report inner join Q_app_requirements on clientid_id = Q_app_requirements.id where Q_app_user_report.campaign_name = Q_app_requirements.campaign_name order by date desc;'
     elif parentValue != 'all' and dependValue=='':
-        q1="select campaign_name from q_app_requirements where deptid_id = {}".format(parentValue)
+        q1="select campaign_name from Q_app_requirements where deptid_id = {}".format(parentValue)
         cur.execute(q1)
         res = cur.fetchone()[0]
         #print(res)
-        q = "select q_app_user_report.id,q_app_user_report.clientname,  q_app_user_report.campaign_name,date, no_of_impressions,no_of_clicks,no_of_sessions,cpm,cpc,cost_per_session,total_cpm,total_cpc,total_cps,ctr,start_date,end_date from q_app_user_report inner join q_app_requirements on clientid_id = q_app_requirements.id where q_app_user_report.campaign_name = q_app_requirements.campaign_name and q_app_requirements.deptid_id ={} and q_app_requirements.campaign_name='{}' order by date desc;".format(parentValue,res)
+        q = "select Q_app_user_report.id,Q_app_user_report.clientname,  Q_app_user_report.campaign_name,date, no_of_impressions,no_of_clicks,no_of_sessions,cpm,cpc,cost_per_session,total_cpm,total_cpc,total_cps,ctr,start_date,end_date from Q_app_user_report inner join Q_app_requirements on clientid_id = Q_app_requirements.id where Q_app_user_report.campaign_name = Q_app_requirements.campaign_name and Q_app_requirements.deptid_id ={} and Q_app_requirements.campaign_name='{}' order by date desc;".format(parentValue,res)
     else:
-        q = "select q_app_user_report.id,q_app_user_report.clientname,  q_app_user_report.campaign_name,date, no_of_impressions,no_of_clicks,no_of_sessions,cpm,cpc,cost_per_session,total_cpm,total_cpc,total_cps,ctr,start_date,end_date from q_app_user_report inner join q_app_requirements on clientid_id = q_app_requirements.id where q_app_user_report.campaign_name = q_app_requirements.campaign_name and q_app_requirements.deptid_id ={} and q_app_requirements.campaign_name='{}' order by date desc;".format(parentValue,dependValue)
+        q = "select Q_app_user_report.id,Q_app_user_report.clientname,  Q_app_user_report.campaign_name,date, no_of_impressions,no_of_clicks,no_of_sessions,cpm,cpc,cost_per_session,total_cpm,total_cpc,total_cps,ctr,start_date,end_date from Q_app_user_report inner join Q_app_requirements on clientid_id = Q_app_requirements.id where Q_app_user_report.campaign_name = Q_app_requirements.campaign_name and Q_app_requirements.deptid_id ={} and Q_app_requirements.campaign_name='{}' order by date desc;".format(parentValue,dependValue)
         
     cur.execute(q)
     data = list(cur.fetchall())
@@ -682,7 +682,7 @@ import json
 def reportdata(request):
     #print(request)
     cur,conn = sqlconn()
-    q1 = 'select DISTINCT deptid_id ,clientname from q_app_clientdetails inner join q_app_requirements on q_app_clientdetails.id =  deptid_id;'
+    q1 = 'select DISTINCT deptid_id ,clientname from Q_app_clientdetails inner join Q_app_requirements on Q_app_clientdetails.id =  deptid_id;'
     cur.execute(q1)
     people = list(cur.fetchall()) 
     empcontext = requirements.objects.all()    
@@ -694,7 +694,7 @@ def reportdata(request):
         parentValue = request.POST.get('parentValue')
         dependValue = request.POST.get('dependValue')
 
-        head = ['q_app_user_report.id', 'clientname', 'q_app_user_report.campaign_name', 'date', 'no_of_impressions', 'no_of_clicks', 'no_of_sessions', 'cpm', 'cpc', 'cost_per_session', 'total_cpm', 'total_cpc', 'total_cps', 'q_app_user_report.ctr', 'clientid_id']
+        head = ['Q_app_user_report.id', 'clientname', 'Q_app_user_report.campaign_name', 'date', 'no_of_impressions', 'no_of_clicks', 'no_of_sessions', 'cpm', 'cpc', 'cost_per_session', 'total_cpm', 'total_cpc', 'total_cps', 'Q_app_user_report.ctr', 'clientid_id']
         print(parentValue,dependValue)
         #print(datef,datet) 
         query = ''
@@ -705,13 +705,13 @@ def reportdata(request):
         camp_name = None
         if parentValue == 'all' and dependValue is None:
             if date_Presence:
-                q = f'select q_app_user_report.id,q_app_user_report.clientname,  q_app_user_report.campaign_name,date, no_of_impressions,no_of_clicks,no_of_sessions,cpm,cpc,cost_per_session,total_cpm,total_cpc,total_cps,q_app_user_report.ctr,planned_budget_impressions, planned_budget_clicks, planned_budget_sessions ,start_date,end_date from q_app_user_report inner join q_app_requirements on clientid_id = q_app_requirements.id where q_app_user_report.campaign_name = q_app_requirements.campaign_name and (date >= "{datef}" and date <="{datet}") order by date desc;'
+                q = f'select Q_app_user_report.id,Q_app_user_report.clientname,  Q_app_user_report.campaign_name,date, no_of_impressions,no_of_clicks,no_of_sessions,cpm,cpc,cost_per_session,total_cpm,total_cpc,total_cps,Q_app_user_report.ctr,planned_budget_impressions, planned_budget_clicks, planned_budget_sessions ,start_date,end_date from Q_app_user_report inner join Q_app_requirements on clientid_id = Q_app_requirements.id where Q_app_user_report.campaign_name = Q_app_requirements.campaign_name and (date >= "{datef}" and date <="{datet}") order by date desc;'
                 #print('hey')
             else:
-                q = 'select q_app_user_report.id,q_app_user_report.clientname,  q_app_user_report.campaign_name,date, no_of_impressions,no_of_clicks,no_of_sessions,cpm,cpc,cost_per_session,total_cpm,total_cpc,total_cps,q_app_user_report.ctr,planned_budget_impressions, planned_budget_clicks, planned_budget_sessions ,start_date,end_date from q_app_user_report inner join q_app_requirements on clientid_id = q_app_requirements.id where q_app_user_report.campaign_name = q_app_requirements.campaign_name order by date desc;'
+                q = 'select Q_app_user_report.id,Q_app_user_report.clientname,  Q_app_user_report.campaign_name,date, no_of_impressions,no_of_clicks,no_of_sessions,cpm,cpc,cost_per_session,total_cpm,total_cpc,total_cps,Q_app_user_report.ctr,planned_budget_impressions, planned_budget_clicks, planned_budget_sessions ,start_date,end_date from Q_app_user_report inner join Q_app_requirements on clientid_id = Q_app_requirements.id where Q_app_user_report.campaign_name = Q_app_requirements.campaign_name order by date desc;'
         elif parentValue != 'all' and (dependValue=='' or dependValue is None):
                 #print('comening')
-            q1="select campaign_name,selected_col from q_app_requirements where deptid_id = {}".format(parentValue)
+            q1="select campaign_name,selected_col from Q_app_requirements where deptid_id = {}".format(parentValue)
             cur.execute(q1)
             res = cur.fetchone()
             camp=res[0]
@@ -730,9 +730,9 @@ def reportdata(request):
             if 'no_of_sessions' in col:
                 col.insert(-1,'total_cps')
             if date_Presence:
-                query = f"select {', '.join(col)} ,planned_budget_impressions, planned_budget_clicks, planned_budget_sessions ,start_date,end_date"+f" from q_app_user_report inner join q_app_requirements on clientid_id = q_app_requirements.id where q_app_user_report.campaign_name = q_app_requirements.campaign_name and q_app_requirements.deptid_id ={parentValue} and q_app_requirements.campaign_name='{camp}' and (date >= '{datef}' and date <='{datet}') order by date desc;"
+                query = f"select {', '.join(col)} ,planned_budget_impressions, planned_budget_clicks, planned_budget_sessions ,start_date,end_date"+f" from Q_app_user_report inner join Q_app_requirements on clientid_id = Q_app_requirements.id where Q_app_user_report.campaign_name = Q_app_requirements.campaign_name and Q_app_requirements.deptid_id ={parentValue} and Q_app_requirements.campaign_name='{camp}' and (date >= '{datef}' and date <='{datet}') order by date desc;"
             else:
-                query = f"select {', '.join(col)} ,planned_budget_impressions, planned_budget_clicks, planned_budget_sessions  ,start_date,end_date"+f" from q_app_user_report inner join q_app_requirements on clientid_id = q_app_requirements.id where q_app_user_report.campaign_name = q_app_requirements.campaign_name and q_app_requirements.deptid_id ={parentValue} and q_app_requirements.campaign_name='{camp}' order by date desc;"
+                query = f"select {', '.join(col)} ,planned_budget_impressions, planned_budget_clicks, planned_budget_sessions  ,start_date,end_date"+f" from Q_app_user_report inner join Q_app_requirements on clientid_id = Q_app_requirements.id where Q_app_user_report.campaign_name = Q_app_requirements.campaign_name and Q_app_requirements.deptid_id ={parentValue} and Q_app_requirements.campaign_name='{camp}' order by date desc;"
 
             cur.execute(query)
             headers = [i[0] for i in cur.description]
@@ -759,10 +759,10 @@ def reportdata(request):
             return render(request,'SAdmin_Reportdata.html',{'data':json.dumps(f_data),'col':json.dumps(headers[1:-5]),'rd':json.dumps(report),'planned':pl,'achived':achv,'target':tr,'people':people,'empcontext':empcontext,'status':status(data[0]),'camp_name':camp_name,})
                 
         else:
-            q1="select selected_col from q_app_requirements where deptid_id = {} and campaign_name = '{}' ".format(parentValue,dependValue)
+            q1="select selected_col from Q_app_requirements where deptid_id = {} and campaign_name = '{}' ".format(parentValue,dependValue)
             cur.execute(q1)
                 #col=[]
-            head = ['q_app_user_report.id', 'clientname', 'q_app_user_report.campaign_name', 'date', 'no_of_impressions', 'no_of_clicks', 'no_of_sessions', 'cpm', 'cpc', 'cost_per_session', 'total_cpm', 'total_cpc', 'total_cps', 'q_app_user_report.ctr', 'clientid_id']
+            head = ['Q_app_user_report.id', 'clientname', 'Q_app_user_report.campaign_name', 'date', 'no_of_impressions', 'no_of_clicks', 'no_of_sessions', 'cpm', 'cpc', 'cost_per_session', 'total_cpm', 'total_cpc', 'total_cps', 'Q_app_user_report.ctr', 'clientid_id']
             sel = ast.literal_eval(cur.fetchone()[0])
             #print('selcol',sel)
             col=head[:4]
@@ -779,13 +779,13 @@ def reportdata(request):
             print(pl,achv)
             #print('col',col)
             if date_Presence:
-                query = f"select {', '.join(col)},planned_budget_impressions, planned_budget_clicks, planned_budget_sessions ,start_date,end_date"+f" from q_app_user_report inner join q_app_requirements on clientid_id = q_app_requirements.id where q_app_user_report.campaign_name = q_app_requirements.campaign_name and q_app_requirements.deptid_id ={parentValue} and q_app_requirements.campaign_name='{dependValue}' and (date >= '{datef}' and date <='{datet}') order by date desc;"
+                query = f"select {', '.join(col)},planned_budget_impressions, planned_budget_clicks, planned_budget_sessions ,start_date,end_date"+f" from Q_app_user_report inner join Q_app_requirements on clientid_id = Q_app_requirements.id where Q_app_user_report.campaign_name = Q_app_requirements.campaign_name and Q_app_requirements.deptid_id ={parentValue} and Q_app_requirements.campaign_name='{dependValue}' and (date >= '{datef}' and date <='{datet}') order by date desc;"
             else:
             
-                query = f"select {', '.join(col)},planned_budget_impressions, planned_budget_clicks, planned_budget_sessions ,start_date,end_date"+f" from q_app_user_report inner join q_app_requirements on clientid_id = q_app_requirements.id where q_app_user_report.campaign_name = q_app_requirements.campaign_name and q_app_requirements.deptid_id ={parentValue} and q_app_requirements.campaign_name='{dependValue}' order by date desc;"
+                query = f"select {', '.join(col)},planned_budget_impressions, planned_budget_clicks, planned_budget_sessions ,start_date,end_date"+f" from Q_app_user_report inner join Q_app_requirements on clientid_id = Q_app_requirements.id where Q_app_user_report.campaign_name = Q_app_requirements.campaign_name and Q_app_requirements.deptid_id ={parentValue} and Q_app_requirements.campaign_name='{dependValue}' order by date desc;"
                 #print('col',query)
                 
-                #q = "select q_app_user_report.id,q_app_user_report.clientname, q_app_user_report.campaign_name,date, no_of_impressions,no_of_clicks,no_of_sessions,cpm,cpc,cost_per_session,total_cpm,total_cpc,total_cps,total_cost,q_app_user_report.ctr,start_date,end_date,planned_cost from q_app_user_report inner join q_app_requirements on clientid_id = q_app_requirements.id where q_app_user_report.campaign_name = q_app_requirements.campaign_name and q_app_requirements.deptid_id ={} and q_app_requirements.campaign_name='{}' order by date desc;".format(parentValue,dependValue)
+                #q = "select Q_app_user_report.id,Q_app_user_report.clientname, Q_app_user_report.campaign_name,date, no_of_impressions,no_of_clicks,no_of_sessions,cpm,cpc,cost_per_session,total_cpm,total_cpc,total_cps,total_cost,Q_app_user_report.ctr,start_date,end_date,planned_cost from Q_app_user_report inner join Q_app_requirements on clientid_id = Q_app_requirements.id where Q_app_user_report.campaign_name = Q_app_requirements.campaign_name and Q_app_requirements.deptid_id ={} and Q_app_requirements.campaign_name='{}' order by date desc;".format(parentValue,dependValue)
             camp_name = dependValue.upper()
             #print('q:',query)
             cur.execute(query)
@@ -812,7 +812,7 @@ def reportdata(request):
                 #print('data',f_data)
             conn.commit()
             return render(request,'SAdmin_Reportdata.html',{'data':json.dumps(f_data),'col':json.dumps(headers[1:-5]),'rd':json.dumps(report),'planned':pl,'achived':achv,'target':tr,'people':people,'empcontext':empcontext,'status':status(data[0]),'camp_name':camp_name,})     
-        #q='select * from q_app_user_report'
+        #q='select * from Q_app_user_report'
         cur.execute(q)
         headers = [i[0] for i in cur.description]
         #print(headers)
@@ -835,7 +835,7 @@ def reportdata(request):
         return render(request,'SAdmin_Reportdata.html',{'data':json.dumps(data),'col':json.dumps(headers[1:-5]),'rd':json.dumps(report),'people':people,'empcontext':empcontext,'camp_name':None})
     else:
         #print('sky')
-        q = 'select q_app_user_report.id,q_app_user_report.clientname, q_app_user_report.campaign_name,date, no_of_impressions,no_of_clicks,no_of_sessions,cpm,cpc,cost_per_session,total_cpm,total_cpc,total_cps,q_app_user_report.ctr,start_date,end_date from q_app_user_report inner join q_app_requirements on clientid_id = q_app_requirements.id where q_app_user_report.campaign_name = q_app_requirements.campaign_name order by date desc;'
+        q = 'select Q_app_user_report.id,Q_app_user_report.clientname, Q_app_user_report.campaign_name,date, no_of_impressions,no_of_clicks,no_of_sessions,cpm,cpc,cost_per_session,total_cpm,total_cpc,total_cps,Q_app_user_report.ctr,start_date,end_date from Q_app_user_report inner join Q_app_requirements on clientid_id = Q_app_requirements.id where Q_app_user_report.campaign_name = Q_app_requirements.campaign_name order by date desc;'
         cur.execute(q)
         headers = [i[0] for i in cur.description]
         #print(headers)
@@ -1069,7 +1069,7 @@ def validate(request):
             print(new_pass == conf_pass)
             if new_pass == conf_pass:
                 cur,conn=sqlconn()
-                q="update q_app_clientdetails set password=AES_ENCRYPT('{}','pass') where id = {}".format(new_pass,id)
+                q="update Q_app_clientdetails set password=AES_ENCRYPT('{}','pass') where id = {}".format(new_pass,id)
                 cur.execute(q)
                 conn.commit()
                 messages.success(request,"Password Succefully Changed Log In Now")
@@ -1170,11 +1170,11 @@ def u_report(request):
     '''
     '''
     if request.method=='GET':
-            q1 = 'select DISTINCT deptid_id ,clientname from q_app_clientdetails inner join q_app_requirements on q_app_clientdetails.id =  deptid_id;'
+            q1 = 'select DISTINCT deptid_id ,clientname from Q_app_clientdetails inner join Q_app_requirements on Q_app_clientdetails.id =  deptid_id;'
             cur.execute(q1)
             people = list(cur.fetchall())
             #print(people,type(people))
-            #q2 = 'select * from  q_app_clientdetails'
+            #q2 = 'select * from  Q_app_clientdetails'
             #cur.execute(q2)
             #empcontext = list(cur.fetchall())
             #context={'people':people,'empcontext':empcontext}
@@ -1184,7 +1184,7 @@ def u_report(request):
             return render(request,'user_report.html',{'people':people,'empcontext':empcontext})
             #return render(request,'user_report.html',{'people':people})
     '''
-    q1 = 'select DISTINCT deptid_id ,clientname from q_app_clientdetails inner join q_app_requirements on q_app_clientdetails.id =  deptid_id;'
+    q1 = 'select DISTINCT deptid_id ,clientname from Q_app_clientdetails inner join Q_app_requirements on Q_app_clientdetails.id =  deptid_id;'
     cur.execute(q1)
     people = list(cur.fetchall()) 
     empcontext = requirements.objects.all()   
@@ -1211,7 +1211,7 @@ def u_report(request):
             campaign_name=campaign_name.strip()
             date=request.POST['date']
             if user_report.objects.filter(Q(date=date) & Q (clientname=clientname) & Q(campaign_name=campaign_name)).exists(): # it checks client name is already registered or not
-                q1 = 'select DISTINCT deptid_id ,clientname from q_app_clientdetails inner join q_app_requirements on q_app_clientdetails.id =  deptid_id;'
+                q1 = 'select DISTINCT deptid_id ,clientname from Q_app_clientdetails inner join Q_app_requirements on Q_app_clientdetails.id =  deptid_id;'
                 cur.execute(q1)
                 people = list(cur.fetchall()) 
                 #people = clientdetails.objects.all()
@@ -1223,7 +1223,7 @@ def u_report(request):
             
             else:
                 print(request.POST)
-                q1 = "select id from q_app_requirements where name='{}' and  campaign_name='{}'".format(clientname,campaign_name)
+                q1 = "select id from Q_app_requirements where name='{}' and  campaign_name='{}'".format(clientname,campaign_name)
                 cur.execute(q1)
                 data = list(cur.fetchone())
                 #print(data[0])
@@ -1244,7 +1244,7 @@ def u_report(request):
                     ctr=request.POST.get('ctr'),
                     clientid_id= int(data[0])
                 ).save()
-                q1 = 'select DISTINCT deptid_id ,clientname from q_app_clientdetails inner join q_app_requirements on q_app_clientdetails.id =  deptid_id;'
+                q1 = 'select DISTINCT deptid_id ,clientname from Q_app_clientdetails inner join Q_app_requirements on Q_app_clientdetails.id =  deptid_id;'
                 cur.execute(q1)
                 people = list(cur.fetchall())
                 conn.commit()
@@ -1266,7 +1266,7 @@ def report_user(request):
     if request.method=='GET':
         #people = clientdetails.objects.all()
         #deptcontext = clientdetails.objects.all()
-        q1 = 'select DISTINCT deptid_id ,clientname from q_app_clientdetails inner join q_app_requirements on q_app_clientdetails.id =  deptid_id;'
+        q1 = 'select DISTINCT deptid_id ,clientname from Q_app_clientdetails inner join Q_app_requirements on Q_app_clientdetails.id =  deptid_id;'
         cur.execute(q1)
         people = list(cur.fetchall()) 
         empcontext = requirements.objects.all()    
@@ -1288,7 +1288,7 @@ def report_user(request):
             campaign_name=campaign_name.strip()
             date=request.POST['date']
         if user_report.objects.filter(Q(date=date) & Q (clientname=clientname) & Q(campaign_name=campaign_name)).exists(): # it checks client name is already registered or not
-            q1 = 'select DISTINCT deptid_id ,clientname from q_app_clientdetails inner join q_app_requirements on q_app_clientdetails.id =  deptid_id;'
+            q1 = 'select DISTINCT deptid_id ,clientname from Q_app_clientdetails inner join Q_app_requirements on Q_app_clientdetails.id =  deptid_id;'
             cur.execute(q1)
             people = list(cur.fetchall()) 
             #people = clientdetails.objects.all()
@@ -1306,7 +1306,7 @@ def report_user(request):
             #print(campaign_name)
             campaign_name=campaign_name.strip()
             #print(clientname,campaign_name)
-            q1 = "select id from q_app_requirements where name='{}' and  campaign_name='{}'".format(clientname,campaign_name)
+            q1 = "select id from Q_app_requirements where name='{}' and  campaign_name='{}'".format(clientname,campaign_name)
             cur.execute(q1)
             data = list(cur.fetchone())
             #print(data)
@@ -1327,7 +1327,7 @@ def report_user(request):
                     ctr=request.POST.get('ctr'),
                     clientid_id= int(data[0])
             ).save()
-            q1 = 'select DISTINCT deptid_id ,clientname from q_app_clientdetails inner join q_app_requirements on q_app_clientdetails.id =  deptid_id;'
+            q1 = 'select DISTINCT deptid_id ,clientname from Q_app_clientdetails inner join Q_app_requirements on Q_app_clientdetails.id =  deptid_id;'
             cur.execute(q1)
             people = list(cur.fetchall()) 
             conn.commit()
