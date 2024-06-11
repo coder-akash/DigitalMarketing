@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -30,7 +31,7 @@
         }
     </style>
     {% include 'cdnlines.html' %}
-    <h2 class="text-center">Brightcom Group Limited</h2>
+    <h2 class="text-center">Company Name</h2>
 </head>
 
 <body>
@@ -41,10 +42,10 @@
                     <div class="card rounded-3 text-black">
                         <div class="row g-0">
                             <div class="col-lg-6">
-                                <div class="card-body p-md-5 mx-md-4">
+                                <div class="card-body p-md-3 mx-md-4">
 
                                     <div class="text-center">
-                                        <img src="https://www.brightcomgroup.com/wp-content/uploads/2021/02/logo.png" style="width: 185px; height: 60px;" alt="logo">
+                                        <img src={% static '\\images\companyLogo.png' %} style="width: 200px; height: 120px; object-fit:cover" alt="logo">
 
                                     </div>
 
@@ -86,7 +87,7 @@
                             <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
                                 <div class="text-white px-3 py-4 p-md-5 mx-md-4">
                                     <h4 class="mb-4">We are more than just a company</h4>
-                                    <p class="small mb-0">Brightcom Group consolidates Ad-tech, New Media and IoT based businesses across the globe, primarily in the digital eco-system. Clients include leading blue chip advertisers like Airtel, British Airways, Coca-Cola,
+                                    <p class="small mb-0">[Company Name Here] consolidates Ad-tech, New Media and IoT based businesses across the globe, primarily in the digital eco-system. Clients include leading blue chip advertisers like Airtel, British Airways, Coca-Cola,
                                         Hyundai Motors, ICICI Bank, ITC, ING, Lenovo, LIC, Maruti Suzuki, MTV, P&G, Qatar Airways, Samsung, Viacom, Sony, Star India, Vodafone, Titan, and Unilever.
                                     </p>
                                 </div>

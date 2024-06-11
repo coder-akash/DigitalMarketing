@@ -83,7 +83,8 @@
     }
     
     .right {
-        margin-left: 20px;
+        margin-top: 20px;
+        float:right
     }
     .table-container {
       width: 100%;
@@ -122,44 +123,55 @@
       top: 0;
       
   }
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: black;
+  }
+  
+  li {
+    float: left;
+  }
+  
+  li a {
+    display: block;
+    color: rgb(164, 164, 164);
+    text-align: center;
+    font-size:14px;
+    padding: 14px 18px;
+   
+    text-decoration: none;
+  }
+  
+  li a:hover {
+    color: white;
+    text-decoration: none;
+  }
       
         </style>
-      <div class="container" style='max-height:80px'>
-        <div class="image" >
-          <img src={% static '\\images\companyLogo.png' %} style='width:200px;max-height:100px;object-fit:auto;' alt="Logo">
-        </div>
-        <div class="text" style='display:flex;justify-content:center;align-items:center'>
-          <img src="{% static '\\images\wel.png' %}" style='object-fit:contain'>
-          <span style='font-size:25px; border:1px solid black;padding:10px;color:#3ab2d5'>{{client}}</span>
-        </div>
-        <button style='background-color:#ff4d4d;' onclick="window.location.href = '/login'">Logout</button>
-      </div>
-    <hr size="4" color="black">
+      
+    
     
 </head>
 
 <body onload='showstats()'>
-
-<div id="" class="container2" >
-  <div class="left">
-  <form action="{% url 'campaign_details' %}" method="post">
-    {% csrf_token %}
-    <input type='text' name='clientname' value='{{client}}' hidden>
-    <label for="campaign_name"  style="display: inline;">Select a campaign:</label>
-    <select name="campaign_name" id="campaign_name" required>
-        {% for i in campaigns %}
-        <option value="{{ i.0 }}">{{i.0}}</option>
-        {% endfor %}
-    </select>
-    <input type="submit" value="Submit"  style='background-color:#ffaa80;'>
-</form>
-</div> 
+    <ul>      
+        <li><a href="/clientform/">Client Form</a></li>
+        <li><a href="/viewclientdetails/">Client Details</a></li>
+        <li><a href="/taskcreation/">Campaign Data</a></li>
+        <li><a href="/taskdata/">Campaign Details</a></li>
+        <li><a href="/u_report/">Report Form</a></li>
+        <li><a href="/reportdata/">Report Details</a></li>
+        <li><a href="/login/" >Logout</a></li>
+      </ul>
 <div class="right">
 <button id='loadbtn'onclick='LoadReport()' value=true style='float:right; width: 100%;height: 50%px;border-radius: 12px;background-color:#1affd1;'>
   Load Campaign Report...
 </button>
 </div>
-</div>
+
     <p hidden id='data'> {{data}}</p>
     <p hidden id='dates'> {{dates}}</p>
     <p hidden id='no_impre'> {{impr}}</p>

@@ -414,7 +414,7 @@ td {
                 row.values.forEach((cell)=> {
                     rowHtml += '<td>' + cell + '</td>';
                 });
-                rowHtml += `<td><a href=/edit_report/${id}><span class="btn btn-success">Edit</span></a> | <a href=/delete_report/${id}> <span class="btn btn-danger ml-3" onclick="return confirm('are you sure you want to delete ?')">Delete</span></a></td>`; // Add Edit and Delete links
+                rowHtml += `<td><a href=/edit_report/${id}><span class="btn btn-success">Edit</span></a> | <a href=/admin-campaign-view/${id}><span class="btn btn-info">View</span></a> | <a href=/delete_report/${id}> <span class="btn btn-danger ml-3" onclick="return confirm('are you sure you want to delete ?')">Delete</span></a></td>`; // Add Edit and Delete links
                 rowHtml += '</tr>';
                 bodyRows.append(rowHtml);
             });
